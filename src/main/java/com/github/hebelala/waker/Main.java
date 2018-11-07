@@ -4,6 +4,7 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class Main {
 
@@ -28,7 +29,7 @@ public class Main {
             throw new RuntimeException("the minute should be 00-59");
         }
 
-        int deviation = 5;
+        int deviation = 1;
 
         System.out.println("Hebe will wake you up at " + point + ", deviation is possibly " + deviation + " minutes");
 
@@ -41,9 +42,33 @@ public class Main {
                 int h = calendar.get(Calendar.HOUR_OF_DAY);
                 int m = calendar.get(Calendar.MINUTE);
                 if (h == hour) {
-                    if (Math.abs(minute - m) < deviation) {
+                    if (Math.abs(minute - m) <= deviation) {
                         play();
                         played = true;
+                    }
+                } else if (h > hour) {
+                    if (h - hour == 1) {
+                        if (60 - minute + m <= deviation) {
+                            play();
+                            played = true;
+                        }
+                    } else if (h - hour == 23) {
+                        if (60 - m + minute <= deviation) {
+                            play();
+                            played = true;
+                        }
+                    }
+                } else {
+                    if (hour - h == 1) {
+                        if (60 - m + minute <= deviation) {
+                            play();
+                            played = true;
+                        }
+                    } else if (hour - h == 23) {
+                        if (60 - minute + m <= deviation) {
+                            play();
+                            played = true;
+                        }
                     }
                 }
             } else {
@@ -53,9 +78,13 @@ public class Main {
     }
 
     private static void play() throws JavaLayerException {
+        System.out.println("--- ^-^ wake wake wake...up... now is " + new Date());
         Player player = new Player(Main.class.getResourceAsStream("/Hebe-FlowersWorld.mp3"));
-        player.play();
-        player.close();
+        try {
+            player.play();
+        } finally {
+            player.close();
+        }
     }
 
 }

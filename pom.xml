@@ -8,7 +8,6 @@
     <artifactId>waker</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
     <dependencies>
         <dependency>
             <groupId>javazoom</groupId>
